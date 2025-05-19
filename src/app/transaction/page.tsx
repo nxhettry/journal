@@ -10,9 +10,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTrade } from "@/hooks/useTrades";
+import { TradeApiResponse } from "@/types/api-response";
+import { Link } from "lucide-react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const DataTable = ({ data }: { data: typeof DATA }) => {
+const DataTable = ({ data }: { data: TradeApiResponse[] | [] }) => {
   return (
     <Table>
       <TableHeader>
@@ -20,6 +21,7 @@ const DataTable = ({ data }: { data: typeof DATA }) => {
           <TableHead className="w-[100px]">Trade No.</TableHead>
           <TableHead>Coin</TableHead>
           <TableHead>Direction</TableHead>
+          <TableHead>Entry Price</TableHead>
           <TableHead>Timeframe</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Entered At</TableHead>
@@ -29,12 +31,25 @@ const DataTable = ({ data }: { data: typeof DATA }) => {
         {data.map((item, index) => {
           return (
             <TableRow key={index}>
-              <TableCell className="font-medium">{index + 1}</TableCell>
-              <TableCell>{item.coin}</TableCell>
-              <TableCell>{item.direction}</TableCell>
-              <TableCell>{item.timeframe}</TableCell>
-              <TableCell>{item.status ?? "closed"}</TableCell>
-              <TableCell>10: 00</TableCell>
+              <Link href={`/trade/${item._id}`}>
+                <TableCell className="font-medium">{index + 1}</TableCell>
+                <TableCell>{item.coin}</TableCell>
+                <TableCell>{item.direction}</TableCell>
+                <TableCell>{item.entryPrice}</TableCell>
+                <TableCell>{item.timeframe}</TableCell>
+                <TableCell>{item.status ?? "closed"}</TableCell>
+                <TableCell>
+                  {item.createdAt
+                    ? new Date(item.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "N/A"}
+                </TableCell>
+              </Link>
             </TableRow>
           );
         })}
@@ -45,22 +60,22 @@ const DataTable = ({ data }: { data: typeof DATA }) => {
 
 const Transactions = () => {
   const { data: trades } = useTrade();
-
-  console.log("trades", trades);
+  const openTrades = trades?.filter((trade) => trade.status === "open");
+  const closedTrades = trades?.filter((trade) => trade.status === "closed");
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full">
       <Card className="w-full max-w-2xl p-6">
-        <Tabs defaultValue="account" className="w-full">
+        <Tabs defaultValue="open" className="w-full">
           <TabsList style={{ width: "100%" }}>
             <TabsTrigger value="open">Open Trades</TabsTrigger>
             <TabsTrigger value="closed">Closed Trades</TabsTrigger>
           </TabsList>
           <TabsContent value="open">
-            <DataTable data={[]} />
+            <DataTable data={openTrades || []} />
           </TabsContent>
           <TabsContent value="closed">
-            <DataTable data={[]} />
+            <DataTable data={closedTrades || []} />
           </TabsContent>
         </Tabs>
       </Card>
