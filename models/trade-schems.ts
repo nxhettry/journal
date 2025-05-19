@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from "mongoose";
+import { getNextSequence } from "./counter-schema";
 
 interface ITradeSchema extends Document {
   trade_no: number;
@@ -71,4 +72,13 @@ const tradeSchema = new Schema<ITradeSchema>(
 );
 
 const Trade = mongoose.model<ITradeSchema>("Trade", tradeSchema);
+
+export const createTrade = async (data: Omit<ITradeSchema, "trade_no">) => {
+  const trade_no = await getNextSequence("tradeCount");
+
+  const newTrade = new Trade({ ...data, trade_no });
+
+  return await newTrade.save();
+};
+
 export default Trade;
