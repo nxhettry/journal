@@ -18,6 +18,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { toast } from "sonner";
 
 const DataTable = ({ data }: { data: TradeApiResponse[] | [] }) => {
   const [selectedTrade, setSelectedTrade] = useState<TradeApiResponse | null>(
@@ -28,6 +30,36 @@ const DataTable = ({ data }: { data: TradeApiResponse[] | [] }) => {
   const handleRowClick = (trade: TradeApiResponse) => {
     setSelectedTrade(trade);
     setIsPopoverOpen(true);
+  };
+
+  const handleCloseTrade = async (trade: TradeApiResponse) => {
+    const isSuccess = confirm("Did you win the trade?");
+    let pnl = prompt("Enter the PNL");
+
+    while (!pnl) {
+      pnl = prompt("Enter the PNL (required):");
+      if (!pnl) {
+        toast.error("PNL is required to close the trade.");
+      }
+    }
+
+    try {
+      const res = await axios.post("/api/transaction/update", {
+        id: trade._id,
+        isSuccess,
+        pnl,
+      });
+
+      if (res.status === 200 || res.status === 201) {
+        toast.success("Trade closed successfully");
+        setIsPopoverOpen(false);
+      } else {
+        toast.error("Failed to update trade");
+      }
+    } catch (error) {
+      console.error("Error closing trade:", error);
+      toast.error("Failed to update trade");
+    }
   };
 
   return (
@@ -110,17 +142,20 @@ const DataTable = ({ data }: { data: TradeApiResponse[] | [] }) => {
                 <strong>Notes:</strong> {selectedTrade.notes}
               </p>
               <p>
-                <strong>Success :</strong> {selectedTrade.isSuccess}
+                <strong>Success :</strong> {selectedTrade.isSuccess ? "Yes" : "No"}
               </p>
-              <p>
+              <p className={`${selectedTrade.isSuccess ? "text-green-500" : "text-red-500"}`}>
                 <strong>PNL :</strong> {selectedTrade.pnl}
               </p>
 
-              {
-                selectedTrade.status === "open" && <Button className="mt-3">
+              {selectedTrade.status === "open" && (
+                <Button
+                  onClick={() => handleCloseTrade(selectedTrade)}
+                  className="mt-3"
+                >
                   Close Trade
                 </Button>
-              }
+              )}
             </div>
           )}
         </PopoverContent>
