@@ -11,27 +11,43 @@ import {
 } from "@/components/ui/table";
 import { useTrade } from "@/hooks/useTrades";
 import { TradeApiResponse } from "@/types/api-response";
-import { Link } from "lucide-react";
+import { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 
 const DataTable = ({ data }: { data: TradeApiResponse[] | [] }) => {
+  const [selectedTrade, setSelectedTrade] = useState<TradeApiResponse | null>(
+    null
+  );
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const handleRowClick = (trade: TradeApiResponse) => {
+    setSelectedTrade(trade);
+    setIsPopoverOpen(true);
+  };
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead className="w-[100px]">Trade No.</TableHead>
-          <TableHead>Coin</TableHead>
-          <TableHead>Direction</TableHead>
-          <TableHead>Entry Price</TableHead>
-          <TableHead>Timeframe</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Entered At</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((item, index) => {
-          return (
-            <TableRow key={index}>
-              <Link href={`/trade/${item._id}`}>
+    <div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Trade No.</TableHead>
+            <TableHead>Coin</TableHead>
+            <TableHead>Direction</TableHead>
+            <TableHead>Entry Price</TableHead>
+            <TableHead>Timeframe</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Entered At</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data.map((item, index) => {
+            return (
+              <TableRow key={index} onClick={() => handleRowClick(item)}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>{item.coin}</TableCell>
                 <TableCell>{item.direction}</TableCell>
@@ -49,12 +65,67 @@ const DataTable = ({ data }: { data: TradeApiResponse[] | [] }) => {
                       })
                     : "N/A"}
                 </TableCell>
-              </Link>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+
+      <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+        <PopoverTrigger asChild>
+          <button className="hidden" />
+        </PopoverTrigger>
+        <PopoverContent className="fixed top-1/2 left-1/4 transform translate-x-[30%] translate-y-[50%] p-4 bg-white shadow-lg rounded-md">
+          {selectedTrade && (
+            <div className="p-4">
+              <h3 className="text-lg font-bold">Trade Details</h3>
+              <p>
+                <strong>Coin:</strong> {selectedTrade.coin}
+              </p>
+              <p>
+                <strong>Direction:</strong> {selectedTrade.direction}
+              </p>
+              <p>
+                <strong>Entry Price:</strong> {selectedTrade.entryPrice}
+              </p>
+              <p>
+                <strong>TP:</strong> {selectedTrade.tp}
+              </p>
+              <p>
+                <strong>SL:</strong> {selectedTrade.sl}
+              </p>
+              <p>
+                <strong>Timeframe:</strong> {selectedTrade.timeframe}
+              </p>
+              <p>
+                <strong>Status:</strong> {selectedTrade.status}
+              </p>
+              <p>
+                <strong>Entered At:</strong>{" "}
+                {selectedTrade.createdAt
+                  ? new Date(selectedTrade.createdAt).toLocaleString()
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Notes:</strong> {selectedTrade.notes}
+              </p>
+              <p>
+                <strong>Success :</strong> {selectedTrade.isSuccess}
+              </p>
+              <p>
+                <strong>PNL :</strong> {selectedTrade.pnl}
+              </p>
+
+              {
+                selectedTrade.status === "open" && <Button className="mt-3">
+                  Close Trade
+                </Button>
+              }
+            </div>
+          )}
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 };
 
