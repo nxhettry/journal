@@ -1,15 +1,16 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { getNextSequence } from "./counter-schema";
+import { TradeRequestBody } from "@/app/api/transaction/route";
 
-interface ITradeSchema extends Document {
-  trade_no: number;
+export interface ITradeSchema extends Document {
+  trade_no?: number;
   coin: string;
   direction: "buy" | "sell";
   timeframe: "5m" | "15m" | "30m" | "1h" | "4h" | "1d";
   entryPrice: number;
   sl: number;
   tp: number;
-  status: "open" | "closed";
+  status?: "open" | "closed";
   isSuccess?: boolean;
   pnl?: number;
   notes?: string;
@@ -73,7 +74,7 @@ const tradeSchema = new Schema<ITradeSchema>(
 
 const Trade = mongoose.model<ITradeSchema>("Trade", tradeSchema);
 
-export const createTrade = async (data: Omit<ITradeSchema, "trade_no">) => {
+export const createTrade = async (data: TradeRequestBody) => {
   const trade_no = await getNextSequence("tradeCount");
 
   const newTrade = new Trade({ ...data, trade_no });
