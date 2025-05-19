@@ -45,10 +45,7 @@ export async function POST(req: NextRequest) {
       pnl: 0,
       notes,
     };
-
-    console.log("Trade data:", tradeData);
-    console.log("Now saving")
-
+    
     const trade = await createTrade(tradeData);
 
     return NextResponse.json(

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
+import QueryProvider from "@/hooks/QueryProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="h-screen w-screen flex justify-center items-center bg-gray-100">
-        <Toaster position="top-right" richColors />
-        {children}
+        <QueryProvider>
+          <Toaster position="top-right" richColors />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );

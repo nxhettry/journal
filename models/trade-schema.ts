@@ -72,7 +72,8 @@ const tradeSchema = new Schema<ITradeSchema>(
   }
 );
 
-const Trade = mongoose.model<ITradeSchema>("Trade", tradeSchema);
+const Trade =
+  mongoose.models.Trade || mongoose.model<ITradeSchema>("Trade", tradeSchema);
 
 export const createTrade = async (data: TradeRequestBody) => {
   const trade_no = await getNextSequence("tradeCount");
