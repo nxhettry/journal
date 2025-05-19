@@ -1,5 +1,5 @@
 "use client";
-import { TradeApiResponse } from "@/types/api-response";
+import { TradeApiResponse } from "../../types/api-response";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 

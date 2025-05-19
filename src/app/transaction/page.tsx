@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTrade } from "@/hooks/useTrades";
-import { TradeApiResponse } from "@/types/api-response";
+import { TradeApiResponse } from "../../../types/api-response";
 import { useState } from "react";
 import {
   Popover,
