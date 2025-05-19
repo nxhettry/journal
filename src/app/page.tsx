@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginFormSchema, loginFormSchemaType } from "@/schema/login-schema";
 import { Card } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 const DEFAULT_VALUES = {
   email: "",
@@ -26,18 +27,22 @@ const Home = () => {
     resolver: zodResolver(loginFormSchema),
   });
 
+  const router = useRouter();
+
   const { handleSubmit, formState } = form;
   const { isSubmitting } = formState;
 
   const onSubmit = async (data: loginFormSchemaType) => {
     console.log("Form submitted", data);
+
+    router.replace("/dashboard");
   };
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center gap-16">
       <Card className="w-4/5 sm:w-3/4 md:w-1/4 h-auto flex items-center justify-center">
         <h1 className="text-xl font-bold w-full text-center">
-          Trading Journal
+          Journal
         </h1>
         <p className="text-sm font-semibold w-full text-center">
           Login to continue
@@ -82,6 +87,13 @@ const Home = () => {
                 </FormItem>
               )}
             />
+
+            {formState.errors.root && (
+              <p className="text-sm text-red-500">
+                {formState.errors.root.message}
+              </p>
+            )}
+
             <Button disabled={isSubmitting} type="submit">
               {isSubmitting ? "Logging in ..." : "Login"}
             </Button>
