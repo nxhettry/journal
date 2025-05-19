@@ -10,3 +10,5 @@ export const loginFormSchema = z.object({
     .min(6, "Password must be at least 6 characters long")
     .nonempty("Password is required"),
 });
+
+export type loginFormSchemaType = z.infer<typeof loginFormSchema>;
