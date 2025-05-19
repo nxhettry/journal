@@ -34,14 +34,20 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const tradeData = {
-      coin,
+      coin: coin.toUpperCase(),
       direction,
       timeframe,
-      entryPrice,
-      sl,
-      tp,
+      entryPrice: Number(entryPrice),
+      sl: Number(sl),
+      tp: Number(tp),
+      status: "open",
+      isSuccess: false,
+      pnl: 0,
       notes,
     };
+
+    console.log("Trade data:", tradeData);
+    console.log("Now saving")
 
     const trade = await createTrade(tradeData);
 

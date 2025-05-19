@@ -12,7 +12,7 @@ const CounterSchema: Schema = new Schema<ICounter>(
   },
   { collection: "counters" }
 );
-const Counter = mongoose.model<ICounter>("Counter", CounterSchema);
+const Counter = mongoose.models.Counter || mongoose.model<ICounter>("Counter", CounterSchema);
 
 const getNextSequence = async (sequenceName: string): Promise<number> => {
   const sequenceDocument = await Counter.findByIdAndUpdate(

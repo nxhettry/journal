@@ -26,6 +26,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { IoChevronBack } from "react-icons/io5";
 
+import axios from "axios";
+import { toast } from "sonner";
+
 const DEFAULT_VALUES = {
   coin: "",
   direction: "buy",
@@ -52,7 +55,22 @@ const AddTransaction = () => {
 
   const onSubmit = async (data: TransactionSchemaType) => {
     console.log("Form submitted", data);
-    // Handle form submission logic here
+
+    try {
+      const res = await axios.post("/api/transaction", data);
+
+      if (res.status === 200 || res.status === 201) {
+        console.log("Transaction added successfully", res.data);
+        toast.success("Transaction added successfully");
+        form.reset();
+      } else {
+        toast.error("Error adding transaction");
+        console.error("Error adding transaction", res.data);
+      }
+    } catch (error) {
+      console.error("Error adding transaction", error);
+      toast.error("Error adding transaction");
+    }
   };
 
   return (
