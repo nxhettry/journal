@@ -1,16 +1,22 @@
 {
-    "name": "Trading Journal",
-    "short_name": "Trading Journal",
-    "description": "A simple app for records",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#000000",
-    "icons": [
-      {
-        "src": "/logo.png",
-        "sizes": "500x500",
-        "type": "image/png"
-      }
-    ]
-  }
+  "name": "Trading Journal",
+  "short_name": "Trading Journal",
+  "description": "A simple app for records",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "500x500",
+      "type": "image/png"
+    }
+  ],
+  "id": "tradernx",
+  "lang": "en",
+  "orientation": "portrait",
+  "categories": [
+    "productivity"
+  ]
+}
